@@ -17,8 +17,16 @@ defmodule Servy.Handler do
   end
 
   def route(conv) do
+    %{ conv | resp_body: "Bears, Lions, Tigers" }
   end
 
   def format_response(conv) do
+    """
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: #{byte_size(conv.resp_body)}
+
+    #{conv.resp_body}
+    """
   end
 end
