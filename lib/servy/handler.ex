@@ -32,6 +32,10 @@ defmodule Servy.Handler do
     %{ conv | status: 200, resp_body: "Bear #{id}" }
   end
 
+  def route(%Conv{method: "DELETE", path: "/bears/" <> _id} = conv) do
+    %{ conv | status: 403, resp_body: "Deleting a bear is forbidden!" }
+  end
+
   def route(%Conv{method: "GET", path: "/about"} = conv) do
     file =
       @pages_path
