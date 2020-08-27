@@ -50,6 +50,13 @@ defmodule Servy.Handler do
     |> handle_file(conv)
   end
 
+  def route(%Conv{method: "GET", path: "/pages/" <> file} = conv) do
+    @pages_path
+    |> Path.join(file <> ".html")
+    |> File.read
+    |> handle_file(conv)
+  end
+
   def handle_file({:ok, content}, %Conv{} = conv) do
     %{ conv | status: 200, resp_body: content }
   end
