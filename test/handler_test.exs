@@ -224,9 +224,9 @@ defmodule HandlerTest do
     assert remove_whitespace(response) == remove_whitespace(expected_response)
   end
 
-  test "GET /pages/about" do
+  test "GET /pages/faq" do
     request = """
-    GET /pages/about HTTP/1.1\r
+    GET /pages/faq HTTP/1.1\r
     Host: example.com\r
     User-Agent: ExampleBrowser/1.0\r
     Accept: */*\r
@@ -235,15 +235,9 @@ defmodule HandlerTest do
 
     response = handle(request)
 
-    expected_response = """
-    HTTP/1.1 200 OK\r
-    Content-Type: text/html\r
-    Content-Length: 27\r
-    \r
-    <h1>Wildthings Refuge</h1>
-    """
+    expected_regex = "<h1>Frequently Asked Questions</h1>"
 
-    assert remove_whitespace(response) == remove_whitespace(expected_response)
+    assert remove_whitespace(response) =~ remove_whitespace(expected_regex)
   end
 
   test "POST /bears" do

@@ -64,9 +64,10 @@ defmodule Servy.Handler do
 
   def route(%Conv{method: "GET", path: "/pages/" <> file} = conv) do
     @pages_path
-    |> Path.join(file <> ".html")
+    |> Path.join(file <> ".md")
     |> File.read
     |> handle_file(conv)
+    |> markdown_to_html
   end
 
   def route(%Conv{path: path} = conv) do
@@ -89,4 +90,10 @@ defmodule Servy.Handler do
     |> Enum.reverse
     |> Enum.join("\n")
   end
+
+  def markdown_to_html(%Conv{status: 200} = conv) do
+    %{ conv | resp_body: Earmark.as_html!(conv.resp_body) }
+  end
+
+  def markdown_to_html(%Conv{} = conv), do: conv
 end
