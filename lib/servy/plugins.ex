@@ -32,4 +32,14 @@ defmodule Servy.Plugins do
     end
     conv
   end
+
+  def put_resp_content_type(%Conv{} = conv, type) do
+    headers = Map.put(conv.resp_headers, "Content-Type", type)
+    %{ conv | resp_headers: headers }
+  end
+
+  def put_content_length(%Conv{} = conv) do
+    headers = Map.put(conv.resp_headers, "Content-Length", byte_size(conv.resp_body))
+    %{ conv | resp_headers: headers }
+  end
 end
