@@ -1,27 +1,14 @@
 defmodule HttpServerTest do
   use ExUnit.Case
 
-  alias Servy.{HttpServer, HttpClient}
+  alias Servy.HttpServer
 
   test "accepts a request on a socket and sends back a response" do
     spawn HttpServer, :start, [4001]
 
-    request = """
-    GET /wildthings HTTP/1.1\r
-    Host: example.com\r
-    User-Agent: ExampleBrowser/1.0\r
-    Accept: */*\r
-    \r
-    """
+    {:ok, response} = HTTPoison.get "http://localhost:4001/wildthings"
 
-    response = HttpClient.send_request(request, 'localhost', 4001)
-
-    assert response == """
-    HTTP/1.1 200 OK\r
-    Content-Type: text/html\r
-    Content-Length: 20\r
-    \r
-    Bears, Lions, Tigers
-    """
+    assert response.status_code == 200
+    assert response.body == "Bears, Lions, Tigers"
   end
 end
