@@ -20,6 +20,11 @@ defmodule Servy.PledgeServer do
     receive do {:response, pledges} -> pledges end
   end
 
+  def total_pledged do
+    send @name, {self(), :total_pledged}
+    receive do {:response, total} -> total end
+  end
+
   # Server
 
   def listen_loop(state) do
@@ -32,6 +37,10 @@ defmodule Servy.PledgeServer do
         listen_loop(new_state)
       {sender, :recent_pledges} ->
         send sender, {:response, state}
+        listen_loop(state)
+      {sender, :total_pledged} ->
+        total = Enum.map(state, &elem(&1, 1)) |> Enum.sum
+        send sender, {:response, total}
         listen_loop(state)
     end
   end
