@@ -22,23 +22,40 @@ defmodule Servy.PledgeServer do
     call @name, :total_pledged
   end
 
+  def clear do
+    cast @name, :clear
+  end
+
+  # Helper Functions
+
   def call(pid, message) do
-    send pid, {self(), message}
+    send pid, {:call, self(), message}
     receive do {:response, response} -> response end
+  end
+
+  def cast(pid, message) do
+    send pid, {:cast, message}
   end
 
   # Server
 
   def listen_loop(state) do
     receive do
-      {sender, message} when is_pid(sender) ->
+      {:call, sender, message} when is_pid(sender) ->
         {response, new_state} = handle_call(message, state)
         send sender, {:response, response}
+        listen_loop(new_state)
+      {:cast, message} ->
+        new_state = handle_cast(message, state)
         listen_loop(new_state)
       unexpected ->
         IO.puts "Unexpected message: #{inspect unexpected}"
         listen_loop(state)
     end
+  end
+
+  def handle_cast(:clear, _state) do
+    []
   end
 
   def handle_call({:create_pledge, name, amount}, state) do
