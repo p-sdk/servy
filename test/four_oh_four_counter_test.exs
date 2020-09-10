@@ -16,5 +16,9 @@ defmodule FourOhFourCounterTest do
     assert Counter.get_count("/bigfoot") == 2
 
     assert Counter.get_counts == %{"/bigfoot" => 2, "/nessie" => 3}
+
+    Counter.reset
+
+    assert Counter.get_counts == %{}
   end
 end
