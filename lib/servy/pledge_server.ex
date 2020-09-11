@@ -67,6 +67,11 @@ defmodule Servy.PledgeServer do
     {:reply, total, state}
   end
 
+  def handle_info(message, state) do
+    IO.puts "Can't touch this! #{inspect message}"
+    {:noreply, state}
+  end
+
   defp send_pledge_to_service(_name, _amount) do
     # CODE GOES HERE TO SEND PLEDGE TO EXTERNAL SERVICE
     {:ok, "pledge-#{:rand.uniform(1000)}"}
