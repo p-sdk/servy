@@ -23,9 +23,9 @@ defmodule Servy.GenericServer do
       {:cast, message} ->
         new_state = callback_module.handle_cast(message, state)
         listen_loop(new_state, callback_module)
-      unexpected ->
-        IO.puts "Unexpected message: #{inspect unexpected}"
-        listen_loop(state, callback_module)
+      message ->
+        new_state = callback_module.handle_info(message, state)
+        listen_loop(new_state, callback_module)
     end
   end
 end
@@ -59,6 +59,11 @@ defmodule Servy.PledgeServerHandRolled do
   end
 
   # Server Callbacks
+
+  def handle_info(message, state) do
+    IO.puts "Unexpected message: #{inspect message}"
+    state
+  end
 
   def handle_cast(:clear, _state) do
     []
